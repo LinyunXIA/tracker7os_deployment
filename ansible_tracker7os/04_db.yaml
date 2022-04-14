@@ -1,0 +1,41 @@
+  - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
+    serial: 20   #How many session
+    remote_user: hp00535    #which user do you remote
+    tasks:  #It defined that how many task under this playbook
+        - name: apt postgresql
+          become: true
+          apt:
+            name: postgresql
+            update_cache: yes #apt-get update
+        - name: start postgresql
+          become: true
+          service:
+            name: postgresql
+            state: started
+        - name: add new configuration to "postgresql.conf" 
+          become: true
+          blockinfile:
+            path: /etc/postgresql/12/main/postgresql.conf
+            block: listen_addresses = 'localhost'
+        - name: create db account MD5  # echo "md5echo -n 'password' | md5sum | awk '{print $1}'"
+          become: true
+          shell: |
+                sudo -u postgres psql -c "create user tracker7os with createdb"
+                sudo -u postgres psql -c "alter user tracker7os with encrypted password'md5d570014f0f7451dec162677f261f18d5'"
+        - name: configuration for pg_hdb.conf to support db connection from Rails
+          become: true
+          shell: sed -i 's/local   all             all                                     peer/local   all             all                                     trust/' /etc/postgresql/12/main/pg_hba.conf
+        - name: restart postgresql
+          become: true
+          service:
+            name: postgresql
+            state: restarted
+        - name: Add DB Password to ~/.profile
+          shell: echo "export TRACKER7OS_DATABASE_PASSWORD=xialinyun" >> $HOME/.profile
+
+
+
+
+
+
+        

@@ -1,0 +1,21 @@
+
+source "https://rubygems.org"
+group :development do
+  # Use console on exceptions pages [https://github.com/rails/web-console]
+  gem "web-console"
+
+  # 使用 Capistrano 作自动化部署
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  #gem 'capistrano-passenger'
+  #Support ed25519 for Capistrano
+
+  gem 'ed25519'
+  gem 'bcrypt_pbkdf'
+
+end
+
+
+

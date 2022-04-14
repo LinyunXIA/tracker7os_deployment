@@ -1,0 +1,84 @@
+  - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
+    serial: 20   #How many session
+    gather_facts: no #collection the informaiton
+    remote_user: hp00535    #which user do you remote
+    vars_prompt:
+      - name: user_name
+        prompt: Please enter user name for the deployment env
+        private: no
+      - name: ruby_version
+        prompt: Please enter the ruby version
+        private: no
+    tasks:  #It defined that how many task under this playbook
+      - name: Install Nginx & Passenger step 1
+        become: true
+        shell: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
+      - name: Install Nginx & Passenger step 2
+        become: true
+        shell: sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger focal main > /etc/apt/sources.list.d/passenger.list'
+      - name: Update repo and default package
+        become: true
+        apt:
+          upgrade: yes #apt-get upgrade
+          update_cache: yes #apt-get update
+      - name: Install Nginx & Passenger step 3, need 20 mins
+        become: true
+        apt:
+          name: "{{item.name}}"
+          update_cache: yes #apt-get update
+        with_items:
+          - { name: "nginx-extras" }
+          - { name: "libnginx-mod-http-passenger" }  #这步超级慢，需要到国外的服务器上面取数据，所以建议直接apt-get可以看到输出。等待很痛苦
+      - name: Install Nginx & Passenger step 4
+        become: true
+        shell: if [ ! -f /etc/nginx/modules-enabled/50-mod-http-passenger.conf ]; then ln -s /usr/share/nginx/modules-available/mod-http-passenger.load /etc/nginx/modules-enabled/50-mod-http-passenger.conf ; fi
+      - name: Install Nginx & Passenger step 5
+        become: true
+        shell: ls /etc/nginx/conf.d/mod-http-passenger.conf
+      - name: Replace ruby path in passenger conf file
+        become: true
+        replace:
+          path: /etc/nginx/conf.d/mod-http-passenger.conf
+          regexp: passenger_ruby /usr/bin/passenger_free_ruby;
+          replace: passenger_ruby /home/{{user_name}}/.rbenv/versions/{{ruby_version}}/bin/ruby;
+      - name: remove default configruation
+        become: true
+        shell: rm /etc/nginx/sites-enabled/default
+      - name: Create site configuration for tracker7os
+        become: true
+        file:
+          path: /etc/nginx/sites-enabled/tracker7os
+          state: touch
+      - name: add new configuration to "postgresql.conf"
+        become: true
+        blockinfile:
+          path: /etc/nginx/sites-enabled/tracker7os
+          block: |
+            server {
+              listen 3000;
+              listen [::]:3000;
+
+              server_name _;
+              root /home/{{user_name}}/tracker7os/current/public;
+
+              passenger_enabled on;
+              passenger_app_env production;
+
+              location /cable {
+                passenger_app_group_name myapp_websocket;
+                passenger_force_max_concurrent_requests_per_process 0;
+              }
+
+              # Allow uploads up to 100MB in size
+              client_max_body_size 100m;
+
+              location ~ ^/(assets|packs) {
+                expires max;
+                gzip_static on;
+              }
+            }
+      - name: restart nginx
+        become: true
+        service:
+          name: nginx
+          state: restarted

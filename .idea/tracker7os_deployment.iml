@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RUBY_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="actionpack (v7.0.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="actionview (v7.0.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activemodel (v7.0.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="activesupport (v7.0.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="airbrussh (v1.4.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bcrypt_pbkdf (v1.1.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bindex (v0.8.1, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="builder (v3.2.4, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="bundler (v2.3.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="capistrano (v3.17.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="capistrano-bundler (v2.0.1, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="capistrano-rails (v1.6.2, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="capistrano-rbenv (v2.2.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="concurrent-ruby (v1.1.10, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="crass (v1.0.6, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="erubi (v1.10.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="i18n (v1.10.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="loofah (v2.16.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="method_source (v1.0.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="minitest (v5.15.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="net-scp (v3.0.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="net-ssh (v6.1.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="nokogiri (v1.13.4, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="racc (v1.6.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack (v2.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rack-test (v1.1.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails-dom-testing (v2.0.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rails-html-sanitizer (v1.4.2, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="railties (v7.0.2.3, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="rake (v13.0.6, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="sshkit (v1.21.2, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="thor (v1.2.1, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="tzinfo (v2.0.4, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="web-console (v4.2.0, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="zeitwerk (v2.5.4, RVM: ruby-3.1.0 [tracker7os]) [gem]" level="application" />
+  </component>
+</module>

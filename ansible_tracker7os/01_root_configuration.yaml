@@ -1,0 +1,57 @@
+  - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
+    serial: 20   #How many session
+    gather_facts: no #collection the informaiton
+    remote_user: root   #which user do you remote
+    vars_prompt:
+      - name: file_path
+        prompt: Please enter private key path for deploy@usingnow.com, for example /Users/linyunxia/OneDrive/ansible_config/config
+        private: no
+      - name: user_name
+        prompt: Please enter user name for the deployment env
+        private: no
+      - name: user_password
+        prompt: Please enter your password for the deployment env
+        encrypt: "sha512_crypt"
+        confirm: yes
+      - name: authorized_keys_file
+        prompt: Please enter your public key for SSH connect for the deployment function
+        private: no
+    tasks:  #It defined that how many task under this playbook
+      - name: create account for app deployment env
+        user: name={{ item.name }} uid={{ item.uid}} shell={{ item.shell}} password={{item.passwd}}
+        with_items:
+          - { name: "{{user_name}}", uid: "600", shell: "/bin/bash", passwd: "{{user_password}}" }
+      - name: add deployment env user to sudoers
+        blockinfile:
+          path: /etc/sudoers # 直接sudo，不需要密码
+          block: "{{user_name}}      ALL=(ALL:ALL)  ALL"
+      - name: Create blank anuthorized_keys files
+        file:
+          path: "{{item.orgsshpath}}"
+          state: touch
+        with_items:
+          - { orgsshpath: "~/authorized_keys" }
+      - name: config aurhorized_keys to your public key
+        blockinfile:
+          path: ~/authorized_keys
+          block: "{{authorized_keys_file}}"
+      - name: .ssh creation
+        file:
+          path: /home/{{user_name}}/.ssh
+          state: directory
+      - name: copy anuthorized_keys to ~/.ssh
+        shell: mv ~/authorized_keys /home/{{user_name}}/.ssh/authorized_keys
+      - name: chmod authorized_key
+        shell: chmod 0600 /home/{{user_name}}/.ssh/authorized_keys
+      - name: chowner authorized_key
+        shell: chown {{user_name}}:{{user_name}} /home/{{user_name}}/.ssh/authorized_keys
+      - name: Copy private key to deployment env
+        copy:
+          src: "{{item.name}}"
+          dest: /home/{{user_name}}/.ssh/
+          owner: "{{user_name}}"
+          group: "{{user_name}}"
+          mode: 0600
+        with_items:
+          - { name: "{{file_path}}/id_ed25519" }
+

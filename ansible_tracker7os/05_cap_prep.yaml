@@ -1,0 +1,21 @@
+  - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
+    serial: 20   #How many session
+    gather_facts: no #collection the informaiton
+    remote_user: hp00535    #which user do you remote
+    vars_prompt:
+      - name: file_path
+        prompt: Please enter your path for configruation files location, for example /Users/linyunxia/OneDrive/ansible_config/config
+        private: no
+    tasks:  #It defined that how many task under this playbook
+      - name: create shared Dir
+        file:
+          path: $HOME/tracker7os/shared/config
+          state: directory
+      - name: Copy Shared config Files to Shared Dir
+        copy:
+          src: "{{item.name}}"
+          dest: $HOME/tracker7os/shared/config
+        with_items:
+          - { name: "{{file_path}}/database.yml" }
+          - { name: "{{file_path}}/master.key" }
+          - { name: "{{file_path}}/credentials.yml.enc" }

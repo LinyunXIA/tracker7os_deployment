@@ -1,0 +1,88 @@
+  - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
+    serial: 20   #How many session
+    gather_facts: no #collection the informaiton
+    remote_user: hp00535    #which user do you remote
+    vars_prompt:
+      - name: ruby_version
+        prompt: which ruby version do you want to install?
+        private: no
+    tasks:  #It defined that how many task under this playbook
+      - name: apt update,upgrade #Update repo and default package
+        become: true
+        apt:
+          upgrade: yes #apt-get upgrade
+          update_cache: yes #apt-get update
+      - name: Adding Node.js repository
+        become: true
+        shell: curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+      - name: Adding Yarn repository step 1
+        become: true
+        shell: curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+      - name: Adding Yarn repository step 2
+        become: true
+        shell: echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+      - name: Install add-apt-repository
+        become: true
+        apt:
+          name: "{{item.name}}"
+          update_cache: yes #apt-get update
+        with_items:
+          - { name: "software-properties-common" }
+          - { name: "dirmngr" }
+          - { name: "lsb-release" }
+          - { name: "ca-certificates" }
+      - name:  redis-server
+        become: true
+        shell: add-apt-repository -y ppa:chris-lea/redis-server #说实话，我不知道这个是干嘛的，只是参照了文档做了转译
+      - name: apt rbenv requirements
+        become: true
+        apt:
+          name: "{{item.name}}"
+          update_cache: yes #apt-get update
+        with_items:
+          - { name: "git" }
+          - { name: "autoconf" }
+          - { name: "bison" }
+          - { name: "build-essential" }
+          - { name: "libssl-dev" }
+          - { name: "libyaml-dev" }
+          - { name: "libreadline-dev" }
+          - { name: "zlib1g-dev" }
+          - { name: "libncurses5-dev" }
+          - { name: "libffi-dev" }
+          - { name: "libgdbm6" }
+          - { name: "libgdbm-dev" }
+          - { name: "libdb-dev" }
+          - { name: "libpq-dev" }
+          - { name: "zlib1g-dev" }
+          - { name: "sqlite3" }  # For Dev only
+          - { name: "libsqlite3-dev" } # For Dev only
+          - { name: "libxml2-dev" }
+          - { name: "libxslt1-dev" }
+          - { name: "libffi-dev" }
+          - { name: "gnupg" }
+          - { name: "apt-transport-https" }
+          - { name: "redis-server" }
+          - { name: "redis-tools" }
+          - { name: "nodejs" }
+          - { name: "yarn" }
+      - name: run rbenv install shell
+        shell: bash -c "$(curl -fsSL https://gitee.com/RubyKids/rbenv-cn/raw/main/tools/install.sh)" # 如果链接无法工作请访问https://gitee.com/RubyKids/rbenv-cn，去确认最新版本的安装脚本并替换
+      - name: Install ruby {{ruby_version}} by rbenv
+        shell: export PATH="$HOME/.rbenv/bin:$PATH"; rbenv cninstall {{ruby_version}}
+      - name: set ruby version to global
+        shell: export PATH="$HOME/.rbenv/bin:$PATH"; rbenv global {{ruby_version}}
+      - name: Remove rubygems.org
+        shell: $HOME/.rbenv/versions/{{ruby_version}}/bin/gem source -r https://rubygems.org/
+      - name: add gems.ruby-china.com
+        shell: $HOME/.rbenv/versions/{{ruby_version}}/bin/gem source -a https://gems.ruby-china.com
+      - name: setup bundle config
+        shell: $HOME/.rbenv/versions/{{ruby_version}}/bin/bundle config 'mirror.https://rubygems.org' 'https://gems.ruby-china.com'
+      - name: bundler installation
+        shell: $HOME/.rbenv/versions/{{ruby_version}}/bin/gem install bunlder
+      - name: setup Node.Js repo to taobao.org
+        shell: npm config set registry https://registry.npm.taobao.org/
+      - name: setup Node.Js repo to default
+        shell: npm config set registry https://registry.npmjs.org/
+      - name: setup yarn repo to taobao.org
+        shell: yarn config set registry https://registry.npm.taobao.org
