@@ -41,10 +41,12 @@
           state: directory
       - name: copy anuthorized_keys to ~/.ssh
         shell: mv ~/authorized_keys /home/{{user_name}}/.ssh/authorized_keys
-      - name: chmod authorized_key
-        shell: chmod 0600 /home/{{user_name}}/.ssh/authorized_keys
-      - name: chowner authorized_key
-        shell: chown {{user_name}}:{{user_name}} /home/{{user_name}}/.ssh/authorized_keys
+      - name: chmod & chown authorized_key
+        file:
+          path: /home/{{user_name}}/.ssh/authorized_keys
+          mode: 0600
+          owner: "{{user_name}}"
+          group: "{{user_name}}"
       - name: Copy private key to deployment env
         copy:
           src: "{{item.name}}"
