@@ -5,6 +5,9 @@
       - name: file_path
         prompt: Please enter your path for configruation files location, for example /Users/linyunxia/OneDrive/ansible_config/config
         private: no
+      - name: db_password
+        prompt: Please enter your password for tracker7os's db password
+        confirm: yes
     tasks:  #It defined that how many task under this playbook
       - name: apt postgresql
         become: true
@@ -21,11 +24,14 @@
         blockinfile:
           path: /etc/postgresql/12/main/postgresql.conf
           block: listen_addresses = 'localhost'
-      - name: create db account MD5  # echo "md5echo -n 'password' | md5sum | awk '{print $1}'"
+      - name: password  conver to md5
+        shell: echo -n '{{db_password}}' | md5sum | awk '{print $1}'
+        register: md5pass
+      - name: create db account MD5  # echo -n 'password' | md5sum | awk '{print $1}'
         become: true
         shell: |
               sudo -u postgres psql -c "create user tracker7os with createdb"
-              sudo -u postgres psql -c "alter user tracker7os with encrypted password'md5d570014f0f7451dec162677f261f18d5'"
+              sudo -u postgres psql -c "alter user tracker7os with encrypted password'md5{{md5pass.stdout}}'"
       - name: configuration for pg_hdb.conf to support db connection from Rails
         become: true
         shell: sed -i 's/local   all             all                                     peer/local   all             all                                     trust/' /etc/postgresql/12/main/pg_hba.conf
