@@ -39,7 +39,7 @@
           src: "{{file_path}}/export"
           dest: /tmp
       - name: read variable file
-        shell: cat $HOME/export
+        shell: cat /tmp/export
         register: new_profile
       - name: import variable to .profile
         shell: echo {{new_profile.stdout}} >> $HOME/.profile

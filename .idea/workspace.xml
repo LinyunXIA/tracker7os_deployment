@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b378a0ae-c24f-485b-aaca-7808f0482e65" name="变更" comment="">
-      <change beforePath="$PROJECT_DIR$/ansible_tracker7os/01_root_configuration.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/ansible_tracker7os/01_root_configuration.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ansible_tracker7os/03_nginx.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ansible_tracker7os/04_db.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
