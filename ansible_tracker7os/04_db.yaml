@@ -1,37 +1,48 @@
   - hosts: Linyun    #target host, all means for all servers which are under inventory. you can put group name in this option.
     serial: 20   #How many session
     remote_user: hp00535    #which user do you remote
+    vars_prompt:
+      - name: file_path
+        prompt: Please enter your path for configruation files location, for example /Users/linyunxia/OneDrive/ansible_config/config
+        private: no
     tasks:  #It defined that how many task under this playbook
-        - name: apt postgresql
-          become: true
-          apt:
-            name: postgresql
-            update_cache: yes #apt-get update
-        - name: start postgresql
-          become: true
-          service:
-            name: postgresql
-            state: started
-        - name: add new configuration to "postgresql.conf" 
-          become: true
-          blockinfile:
-            path: /etc/postgresql/12/main/postgresql.conf
-            block: listen_addresses = 'localhost'
-        - name: create db account MD5  # echo "md5echo -n 'password' | md5sum | awk '{print $1}'"
-          become: true
-          shell: |
-                sudo -u postgres psql -c "create user tracker7os with createdb"
-                sudo -u postgres psql -c "alter user tracker7os with encrypted password'md5d570014f0f7451dec162677f261f18d5'"
-        - name: configuration for pg_hdb.conf to support db connection from Rails
-          become: true
-          shell: sed -i 's/local   all             all                                     peer/local   all             all                                     trust/' /etc/postgresql/12/main/pg_hba.conf
-        - name: restart postgresql
-          become: true
-          service:
-            name: postgresql
-            state: restarted
-        - name: Add DB Password to ~/.profile
-          shell: echo "export TRACKER7OS_DATABASE_PASSWORD=xialinyun" >> $HOME/.profile
+      - name: apt postgresql
+        become: true
+        apt:
+          name: postgresql
+          update_cache: yes #apt-get update
+      - name: start postgresql
+        become: true
+        service:
+          name: postgresql
+          state: started
+      - name: add new configuration to "postgresql.conf"
+        become: true
+        blockinfile:
+          path: /etc/postgresql/12/main/postgresql.conf
+          block: listen_addresses = 'localhost'
+      - name: create db account MD5  # echo "md5echo -n 'password' | md5sum | awk '{print $1}'"
+        become: true
+        shell: |
+              sudo -u postgres psql -c "create user tracker7os with createdb"
+              sudo -u postgres psql -c "alter user tracker7os with encrypted password'md5d570014f0f7451dec162677f261f18d5'"
+      - name: configuration for pg_hdb.conf to support db connection from Rails
+        become: true
+        shell: sed -i 's/local   all             all                                     peer/local   all             all                                     trust/' /etc/postgresql/12/main/pg_hba.conf
+      - name: restart postgresql
+        become: true
+        service:
+          name: postgresql
+          state: restarted
+      - name: Copy variable file to local #把所有的预设变量放在此文件中即可
+        copy:
+          src: "{{file_path}}/export"
+          dest: /tmp
+      - name: read variable file
+        shell: cat $HOME/export
+        register: new_profile
+      - name: import variable to .profile
+        shell: echo {{new_profile.stdout}} >> $HOME/.profile
 
 
 
