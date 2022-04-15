@@ -9,26 +9,55 @@
       - name: ruby_version
         prompt: Please enter the ruby version
         private: no
+      - name: file_path
+        prompt: Please enter passenger local installation files location. for expamle /Users/linyunxia/OneDrive/ansible_config/apt_cache_nginx
+        private: no
     tasks:  #It defined that how many task under this playbook
       - name: Install Nginx & Passenger step 1
         become: true
         shell: apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 561F9B9CAC40B2F7
-      - name: Install Nginx & Passenger step 2
-        become: true
-        shell: sh -c 'echo deb https://oss-binaries.phusionpassenger.com/apt/passenger focal main > /etc/apt/sources.list.d/passenger.list'
       - name: Update repo and default package
         become: true
         apt:
           upgrade: yes #apt-get upgrade
           update_cache: yes #apt-get update
-      - name: Install Nginx & Passenger step 3, need 20 mins
+      - name: Install Nginx & Passenger step 2
         become: true
         apt:
-          name: "{{item.name}}"
+          name: nginx-extras
           update_cache: yes #apt-get update
+      - name: crate a new folder for passenger
+        file:
+          path: /tmp/passenger
+          state: directory
+      - name: Copy passenger location installation files to /tmp
+        copy:
+          src: "{{item.name}}"
+          dest: /tmp/passenger
         with_items:
-          - { name: "nginx-extras" }
-          - { name: "libnginx-mod-http-passenger" }  #这步超级慢，需要到国外的服务器上面取数据，所以建议直接apt-get可以看到输出。等待很痛苦
+          - { name: "{{file_path}}/00-fonts-lato_2.0-2_all.deb" }
+          - { name: "{{file_path}}/01-javascript-common_11_all.deb" }
+          - { name: "{{file_path}}/02-libjs-jquery_3.3.1~dfsg-3_all.deb" }
+          - { name: "{{file_path}}/03-rubygems-integration_1.16_all.deb" }
+          - { name: "{{file_path}}/04-ruby_12.7+1_amd64.deb" }
+          - { name: "{{file_path}}/05-rake_13.0.1-4_all.deb" }
+          - { name: "{{file_path}}/06-ruby-minitest_5.13.0-1_all.deb" }
+          - { name: "{{file_path}}/07-ruby-net-telnet_0.1.1-2_all.deb" }
+          - { name: "{{file_path}}/08-ruby-power-assert_1.1.7-1_all.deb" }
+          - { name: "{{file_path}}/09-ruby-test-unit_3.3.5-1_all.deb" }
+          - { name: "{{file_path}}/10-ruby-xmlrpc_0.3.0-2_all.deb" }
+          - { name: "{{file_path}}/11-libruby2.7_2.7.0-5ubuntu1.6_amd64.deb" }
+          - { name: "{{file_path}}/12-ruby2.7_2.7.0-5ubuntu1.6_amd64.deb" }
+          - { name: "{{file_path}}/13-ruby-rack_2.0.7-2ubuntu0.1_all.deb" }
+          - { name: "{{file_path}}/14-passenger_1%3a6.0.13-1~focal1_amd64.deb" }
+          - { name: "{{file_path}}/15-libnginx-mod-http-passenger_1%3a6.0.13-1~focal1_amd64.deb" }
+          - { name: "{{file_path}}/16-passenger-dev_16.0.13-1~focal1_amd64.deb" }
+          - { name: "{{file_path}}/17-passenger-doc_16.0.13-1~focal1_all.deb" }
+          - { name: "{{file_path}}/18-unzip_6.0-25ubuntu1_amd64.deb" }
+          - { name: "{{file_path}}/19-zip_3.0-11build1_amd64.deb" }
+      - name: Install Passenger
+        become: true
+        shell: dpkg -i /tmp/passenger/*.deb
       - name: Install Nginx & Passenger step 4
         become: true
         shell: if [ ! -f /etc/nginx/modules-enabled/50-mod-http-passenger.conf ]; then ln -s /usr/share/nginx/modules-available/mod-http-passenger.load /etc/nginx/modules-enabled/50-mod-http-passenger.conf ; fi
@@ -49,7 +78,7 @@
         file:
           path: /etc/nginx/sites-enabled/tracker7os
           state: touch
-      - name: add new configuration to "postgresql.conf"
+      - name: add new configuration to site file tracker7os
         become: true
         blockinfile:
           path: /etc/nginx/sites-enabled/tracker7os
